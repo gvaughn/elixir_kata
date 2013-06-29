@@ -11,8 +11,8 @@ defmodule Conway do
   end
 
   defp generation_stats(live_cells) do
-    counts = live_cells |> Enum.reduce HashDict.new, function(cell_neighbor_counts/2)
-    counts |> Enum.reduce HashDict.new, function(neighbor_count_cells/2)
+    live_cells |> Enum.reduce(HashDict.new, function(cell_neighbor_counts/2))
+               |> Enum.reduce(HashDict.new, function(neighbor_count_cells/2))
   end
 
   defp cell_neighbor_counts(live_cell, accumulator) do
