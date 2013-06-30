@@ -1,4 +1,6 @@
 defmodule Conway do
+  #NOTE: a parallel Ruby version can be found
+  # https://github.com/gvaughn/ruby_kata/blob/master/conway/conway.rb
 
   def evolve(generation) do
     live_neighbor_stats = generation_stats(generation)
