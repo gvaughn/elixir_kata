@@ -6,29 +6,27 @@ defmodule Conway do
       intersection(Dict.get(live_neighbor_stats, 2, []), generation))
   end
 
-  defp intersection(a, b) do
-    :sets.to_list(:sets.intersection(:sets.from_list(a), :sets.from_list(b)))
-  end
-
   defp generation_stats(live_cells) do
     live_cells |> Enum.reduce(HashDict.new, function(cell_neighbor_counts/2))
                |> Enum.reduce(HashDict.new, function(neighbor_count_cells/2))
   end
 
   defp cell_neighbor_counts(live_cell, accumulator) do
-    neighbors(live_cell) |> Enum.reduce accumulator, fn(neighbor, acc) ->
+    neighbors(live_cell) |> Enum.reduce(accumulator, fn(neighbor, acc) ->
       Dict.update(acc, neighbor, 1, &1 + 1)
-    end
+    end)
   end
 
   defp neighbor_count_cells({cell, count}, collector) do
-    Dict.update(collector, count, [cell], &1 ++ [cell])
+    Dict.update(collector, count, [cell], [cell | &1])
   end
 
   defp neighbors({x, y}) do
-    [{x - 1 ,y + 1}, {x, y + 1}, {x + 1, y + 1},
-     {x - 1, y},                 {x + 1, y},
-     {x - 1, y - 1}, {x, y - 1}, {x + 1, y - 1}]
+    (lc dx inlist [-1, 0, 1], dy inlist [-1, 0, 1], do: {x + dx, y + dy}) -- [{x, y}]
+  end
+
+  defp intersection(a, b) do
+    :sets.from_list(a) |> :sets.intersection(:sets.from_list(b)) |> :sets.to_list
   end
 end
 
