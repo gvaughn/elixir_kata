@@ -10,7 +10,7 @@ Plus, I provided a few interesting starting blobs. First compile:
 ```
 elixirc "lib/conway.ex"
 ```
-Then run can run any of the following:
+Then you can run any of the following:
 
 * elixir -e "Conway.run_glider"
 * elixir -e "Conway.run_spaceship"
