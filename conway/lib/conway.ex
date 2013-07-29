@@ -65,7 +65,7 @@ defmodule Conway do
   end
 
   defp neighbors({x, y}) do
-    (lc dx inlist [-1, 0, 1], dy inlist [-1, 0, 1], do: {x + dx, y + dy}) -- [{x, y}]
+    lc dx inlist [-1, 0, 1], dy inlist [-1, 0, 1], {dx,dy} != {0,0}, do: {x + dx, y + dy}
   end
 
   defp intersection(a, b) do
