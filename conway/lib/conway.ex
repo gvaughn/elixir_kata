@@ -2,6 +2,7 @@ defmodule Conway do
   import Data.Set.BalancedTree, as: SSet
 
   def main(_args) do
+    # this matters with escriptize
     run_pulsar
   end
 

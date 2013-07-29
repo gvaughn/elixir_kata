@@ -2,23 +2,25 @@
 
 My first Elixir program: Conway's Game of Life
 
+The datastructures branch brings in a 3rd party lib
+
 # Now with Visualization
 
 I figured out the ANSI escape sequences to draw this on the console.
-Plus, I provided a few interesting starting blobs. First compile:
+Plus, I provided a few interesting starting blobs. First compile and test:
 
 ```
-elixirc "lib/conway.ex"
+mix test
 ```
 Then you can run any of the following:
 
-* elixir -e "Conway.run_glider"
-* elixir -e "Conway.run_spaceship"
-* elixir -e "Conway.run_pulsar"
+* mix run "Conway.run_glider"
+* mix run "Conway.run_spaceship"
+* mix run "Conway.run_pulsar"
 
 You could also set your own pairs of x, y coordinates via:
 
-* elixir -e "Conway.run [{1,2}, {1,1}, {1,0}]"
+* mix run "Conway.run [{1,2}, {1,1}, {1,0}]"
 
 In Conway.evolve, it takes a list of 2 element tuples representing x, y
 coordinates of live cells. It uses the center of the screen as the
