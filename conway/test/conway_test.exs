@@ -2,12 +2,13 @@ Code.require_file "test_helper.exs", __DIR__
 
 defmodule ConwayTest do
   use ExUnit.Case
+  import Data.Set.BalancedTree, as: SSet
 
   test "handles static block object" do
     block = [{0,1}, {1,1},
              {0,0}, {1,0}
     ]
-    assert Conway.evolve(block) == Enum.sort(block)
+    assert Set.to_list(Conway.evolve(block)) == Enum.sort(block)
   end
 
   test "handles a blinker" do
@@ -17,8 +18,8 @@ defmodule ConwayTest do
     ]
     blinker_b = [{0,1}, {1,1}, {2,1}
     ]
-    assert Conway.evolve(blinker_a) == Enum.sort(blinker_b)
-    assert Conway.evolve(blinker_b) == Enum.sort(blinker_a)
+    assert Set.to_list(Conway.evolve(blinker_a)) == Enum.sort(blinker_b)
+    assert Set.to_list(Conway.evolve(blinker_b)) == Enum.sort(blinker_a)
   end
 
   test "handles a toad" do
@@ -30,7 +31,7 @@ defmodule ConwayTest do
              {0,0},                {3,0},
                     {1,-1}
     ]
-    assert Conway.evolve(toad_a) == Enum.sort(toad_b)
-    assert Conway.evolve(toad_b) == Enum.sort(toad_a)
+    assert Set.to_list(Conway.evolve(toad_a)) == Enum.sort(toad_b)
+    assert Set.to_list(Conway.evolve(toad_b)) == Enum.sort(toad_a)
   end
 end
