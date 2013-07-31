@@ -22,7 +22,7 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
      Poker.Hand.new(player: 2, type: p2_type, cards: p2_cards, power: p2_power)}
   end
 
-  def stats(cards) do
+  defp stats(cards) do
     {card_freq, suit_freq, gaps} = raw_stats(cards)
     tiebreakers = card_freq
       |> Enum.sort(fn({ka, va}, {kb, vb}) -> {va, ka} > {vb, kb} end)
@@ -38,7 +38,7 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
 
   defp raw_stats(cards) do
     {card_freq, suit_freq} = cards
-      |> Enum.reduce({ListDict.new, HashDict.new}, function(Poker.Hand, :frequencies, 2))
+      |> Enum.reduce({ListDict.new, HashDict.new}, function(frequencies/2))
 
     sorted_cards = cards |> Enum.sort(fn(a,b) -> a.value > b.value end)
     gaps = Enum.zip(Enum.take(sorted_cards, 4), Enum.drop(sorted_cards, 1))
@@ -51,12 +51,12 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
   defp is_straight?([9,1,1,1], card_freq), do: {true, [5]} #ace low straight
   defp is_straight?(_, card_freq),         do: {false, card_freq}
 
-  def frequencies(card, {face_hash, suit_hash}) do
+  defp frequencies(card, {face_hash, suit_hash}) do
     {Dict.update(face_hash, card.value, 1, &1 + 1),
      Dict.update(suit_hash, card.suit,  1, &1 + 1)}
   end
 
-  def determine_type(face_arity, max_face_freq, suit_arity, straight, tiebreakers) do
+  defp determine_type(face_arity, max_face_freq, suit_arity, straight, tiebreakers) do
     {type, leading_term}  = cond do
       straight and suit_arity == 1           -> {"straight flush", 8}
       face_arity == 2 and max_face_freq == 4 -> {"quads", 7}
@@ -71,7 +71,7 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
     {type, calc_power([leading_term | tiebreakers])}
   end
 
-  def calc_power(digits) do
+  defp calc_power(digits) do
     Enum.zip(digits, 5..0)
     |> Enum.reduce(0, fn({term, exponent}, sum) -> sum +
                           :erlang.trunc(term * :math.pow(15, exponent)) end)
