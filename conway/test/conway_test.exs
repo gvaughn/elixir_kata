@@ -7,7 +7,7 @@ defmodule ConwayTest do
     block = [{0,1}, {1,1},
              {0,0}, {1,0}
     ]
-    assert Conway.evolve(block) == Enum.sort(block)
+    assert Enum.to_list(Conway.evolve(block)) == Enum.sort(block)
   end
 
   test "handles a blinker" do
@@ -17,8 +17,8 @@ defmodule ConwayTest do
     ]
     blinker_b = [{0,1}, {1,1}, {2,1}
     ]
-    assert Conway.evolve(blinker_a) == Enum.sort(blinker_b)
-    assert Conway.evolve(blinker_b) == Enum.sort(blinker_a)
+    assert Enum.to_list(Conway.evolve(blinker_a)) == Enum.sort(blinker_b)
+    assert Enum.to_list(Conway.evolve(blinker_b)) == Enum.sort(blinker_a)
   end
 
   test "handles a toad" do
@@ -30,7 +30,7 @@ defmodule ConwayTest do
              {0,0},                {3,0},
                     {1,-1}
     ]
-    assert Conway.evolve(toad_a) == Enum.sort(toad_b)
-    assert Conway.evolve(toad_b) == Enum.sort(toad_a)
+    assert Enum.to_list(Conway.evolve(toad_a)) == Enum.sort(toad_b)
+    assert Enum.to_list(Conway.evolve(toad_b)) == Enum.sort(toad_a)
   end
 end
