@@ -4,7 +4,7 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
     #TODO remove duplication with pair_from_string
     cards = str
       |> String.split
-      |> Enum.map function(Poker.Card, :from_string, 1)
+      |> Enum.map &Poker.Card.from_string/1
     {type, power} = stats(cards)
     Poker.Hand.new(player: 0, type: type, cards: cards, power: power)
   end
@@ -12,7 +12,7 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
   def pair_from_string(str) do
     cards = str
       |> String.split
-      |> Enum.map function(Poker.Card, :from_string, 1)
+      |> Enum.map &Poker.Card.from_string/1
 
     {p1_cards, p2_cards} = Enum.split(cards, 5)
     {p1_type, p1_power} = stats(p1_cards)
@@ -38,11 +38,10 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
 
   defp raw_stats(cards) do
     {card_freq, suit_freq} = cards
-      |> Enum.reduce({ListDict.new, HashDict.new}, function(frequencies/2))
+      |> Enum.reduce({ListDict.new, HashDict.new}, &Poker.Hand.frequencies/2)
 
     sorted_cards = cards |> Enum.sort(fn(a,b) -> a.value > b.value end)
-    gaps = Enum.zip(Enum.take(sorted_cards, 4), Enum.drop(sorted_cards, 1))
-      |> Enum.map(fn({a,b}) -> a.value - b.value end)
+    gaps = each_cons(sorted_cards) |> Enum.map(fn([a,b]) -> a.value - b.value end)
 
     {card_freq, suit_freq, gaps}
   end
@@ -51,7 +50,7 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
   defp is_straight?([9,1,1,1], card_freq), do: {true, [5]} #ace low straight
   defp is_straight?(_, card_freq),         do: {false, card_freq}
 
-  defp frequencies(card, {face_hash, suit_hash}) do
+  def frequencies(card, {face_hash, suit_hash}) do
     {Dict.update(face_hash, card.value, 1, &1 + 1),
      Dict.update(suit_hash, card.suit,  1, &1 + 1)}
   end
@@ -75,5 +74,13 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
     Enum.zip(digits, 5..0)
     |> Enum.reduce(0, fn({term, exponent}, sum) -> sum +
                           :erlang.trunc(term * :math.pow(15, exponent)) end)
+  end
+
+  defp each_cons(list, n // 2), do: _each_cons(list, n, [])
+
+  defp _each_cons(list, n, result) when length(list) < 2, do: Enum.reverse(result)
+
+  defp _each_cons(list = [_ | tail], n, result) do
+    _each_cons(tail, n, [Enum.take(list, n) | result])
   end
 end
