@@ -85,8 +85,8 @@ defmodule Conway do
     a set of cells having that many neighbors as the value
   """
   defp generation_stats(live_cells) do
-    live_cells |> Enum.reduce(HashDict.new, function(cell_neighbor_counts/2))
-               |> Enum.reduce(HashDict.new, function(neighbor_count_cells/2))
+    live_cells |> Enum.reduce(HashDict.new, &cell_neighbor_counts/2)
+               |> Enum.reduce(HashDict.new, &neighbor_count_cells/2)
   end
 
   @doc """
