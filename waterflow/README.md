@@ -5,7 +5,8 @@ a Twitter interview question. Given the height of mountains in some terrain,
 imagine a heavy rain that fills the low lying areas as much as possible.
 Calculate the total area (since it's a 2 dimensional problem) of water.
 
-The link above is to an elegant Haskell solution that was a
+Based off an elegant [Haskell
+solution](http://philipnilsson.github.io/Badness10k/articles/waterflow/) that was a
 straightforward port to Elixir. It was my first encounter with
 Enum.scan, which is similar to reduce, but keeps the accumulator at each
 step as elements of the returned list. Haskell apparently has built-ins

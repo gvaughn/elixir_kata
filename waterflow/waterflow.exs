@@ -38,6 +38,7 @@ defmodule WaterflowTest do
     #  _   _
     # |_|~|_|
     #  0 1 2
+
     assert 1 == Waterflow.area [1, 0, 1]
     assert 1 == Waterflow.area2 [1, 0, 1]
   end
@@ -49,6 +50,7 @@ defmodule WaterflowTest do
     #   |     |
     #  --------
     #  0 1 2 3
+
     assert 0 == Waterflow.area [0,1,2,3]
     assert 0 == Waterflow.area2 [0,1,2,3]
   end
@@ -64,8 +66,25 @@ defmodule WaterflowTest do
     # |    1            |
     #  -----------------
     #  0 1 2 3 4 5 6 7 8
+
     assert 10 == Waterflow.area [2,5,1,2,3,4,7,7,6]
     assert 10 == Waterflow.area2 [2,5,1,2,3,4,7,7,6]
+  end
+
+  test "triple-barrelled" do
+    #                ___
+    #               |7 7|_
+    #    _          |    6|
+    #   |5|~~~~~~~~~|     |
+    #   | |~~~~~~~~~|     |
+    #  _| |~|3|~~~~~|     |
+    # |2  |~| |~|2|~|     |
+    # |    1   1   1      |
+    # ---------------------
+    #  0 1 2 3 4 5 6 7 8 9
+
+    assert 17 == Waterflow.area [2,5,1,3,1,2,1,7,7,6]
+    assert 17 == Waterflow.area2 [2,5,1,3,1,2,1,7,7,6]
   end
 end
 
