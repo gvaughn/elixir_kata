@@ -24,7 +24,7 @@ defmodule Conway do
   """
   def run_pulsar do
     quadrant = [{2,1},{3,1},{4,1},{1,2},{1,3},{1,4},{2,6},{3,6},{4,6},{6,2},{6,3},{6,4}]
-    start = lc {x,y} inlist quadrant, do: [{x,y},{-x,y},{x,-y},{-x,-y}]
+    start = for {x,y} <- quadrant, do: [{x,y},{-x,y},{x,-y},{-x,-y}]
     run(List.flatten(start))
   end
 
@@ -59,7 +59,7 @@ defmodule Conway do
   defp hide_cursor,  do: IO.write "\e[?25l"
   defp show_cursor,  do: IO.write "\e[?25h"
 
-  defp print(generation, str // "*"), do: Enum.each(generation, print_cell(&1, str))
+  defp print(generation, str \\ "*"), do: Enum.each(generation, &print_cell(&1, str))
   defp print_cell({x,y}, str), do: IO.write "\e[#{y + 25};#{2 * (x + 25)}H#{str}"
 
   @doc """
@@ -71,7 +71,7 @@ defmodule Conway do
       cells with 3 live neighbors plus
       cells with 2 live neighbors that were also alive in the last generation
   """
-  def evolve(generation) when is_list(generation), do: evolve(HashSet.new(generation))
+  def evolve(generation) when is_list(generation), do: evolve(Enum.into(generation, HashSet.new))
   def evolve(generation) do
     #NOTE: a parallel Ruby version of the core evolve logic can be found
     # https://github.com/gvaughn/ruby_kata/blob/master/conway/conway.rb
@@ -95,7 +95,7 @@ defmodule Conway do
   """
   defp cell_neighbor_counts(live_cell, accumulator) do
     neighbors(live_cell) |> Enum.reduce(accumulator, fn(neighbor, acc) ->
-      Dict.update(acc, neighbor, 1, &1 + 1)
+      Dict.update(acc, neighbor, 1, &(&1 + 1))
     end)
   end
 
@@ -104,14 +104,14 @@ defmodule Conway do
     Dict<count -> set of cells>
   """
   defp neighbor_count_cells({cell, count}, collector) do
-    Dict.update(collector, count, HashSet.new([cell]), fn(set) -> Set.put(set, cell) end)
+    Dict.update(collector, count, Enum.into([cell], HashSet.new), fn(set) -> Set.put(set, cell) end)
   end
 
   @doc """
     finds surrounding cells of a given cell, excluding the original cell
   """
   defp neighbors({x, y}) do
-    lc dx inlist [-1, 0, 1], dy inlist [-1, 0, 1], {dx,dy} != {0,0}, do: {x + dx, y + dy}
+    for dx <- [-1, 0, 1], dy <- [-1, 0, 1], {dx,dy} != {0,0}, do: {x + dx, y + dy}
   end
 end
 

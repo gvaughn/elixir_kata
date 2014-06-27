@@ -1,6 +1,7 @@
 # Conway
 
 My first Elixir program: Conway's Game of Life
+Now updated for elixir 0.14.1
 
 # Now with Visualization
 
