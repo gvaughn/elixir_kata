@@ -13,13 +13,13 @@ elixirc "lib/conway.ex"
 ```
 Then you can run any of the following:
 
-* elixir -e "Conway.run_glider"
-* elixir -e "Conway.run_spaceship"
-* elixir -e "Conway.run_pulsar"
+* mix run -e Conway.run_glider
+* mix run -e Conway.run_spaceship
+* mix run -e Conway.run_pulsar
 
 You could also set your own pairs of x, y coordinates via:
 
-* elixir -e "Conway.run [{1,2}, {1,1}, {1,0}]"
+* mix run -e "Conway.run [{1,2}, {1,1}, {1.0}]"
 
 In Conway.evolve, it takes a list of 2 element tuples representing x, y
 coordinates of live cells. It uses the center of the screen as the
