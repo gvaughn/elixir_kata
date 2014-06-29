@@ -40,7 +40,7 @@ defmodule Conway do
     _run(generation)
   end
 
-  @doc """
+  @pdoc """
     core visualization recursion point
     takes a list of 2 element tuples
     returns the same
@@ -52,7 +52,7 @@ defmodule Conway do
     _run(evolve(generation))
   end
 
-  @doc """
+  @pdoc """
     ANSI control sequences
   """
   defp clear_screen, do: IO.write "\e[2J"
@@ -62,7 +62,7 @@ defmodule Conway do
   defp print(generation, str \\ "*"), do: Enum.each(generation, &print_cell(&1, str))
   defp print_cell({x,y}, str), do: IO.write "\e[#{y + 25};#{2 * (x + 25)}H#{str}"
 
-  @doc """
+  @pdoc """
     core engine recursion point
     takes a list of 2 element tuples
     returns the same
@@ -80,7 +80,7 @@ defmodule Conway do
       Set.intersection(Dict.get(live_neighbor_stats, 2, HashSet.new), generation))
   end
 
-  @doc """
+  @pdoc """
     generates a Dict of live neightbor counts as keys and
     a set of cells having that many neighbors as the value
   """
@@ -89,7 +89,7 @@ defmodule Conway do
                |> Enum.reduce(HashDict.new, &neighbor_count_cells/2)
   end
 
-  @doc """
+  @pdoc """
     generates a Dict of cells {x,y} as keys and
     the number of live neighbors they have as values
   """
@@ -99,7 +99,7 @@ defmodule Conway do
     end)
   end
 
-  @doc """
+  @pdoc """
     inverts a Dict<cell -> count> to
     Dict<count -> set of cells>
   """
@@ -107,7 +107,7 @@ defmodule Conway do
     Dict.update(collector, count, Enum.into([cell], HashSet.new), fn(set) -> Set.put(set, cell) end)
   end
 
-  @doc """
+  @pdoc """
     finds surrounding cells of a given cell, excluding the original cell
   """
   defp neighbors({x, y}) do
