@@ -25,3 +25,4 @@ defmodule RingTest do
     assert 1 == Ring.play(6)
   end
 end
+
