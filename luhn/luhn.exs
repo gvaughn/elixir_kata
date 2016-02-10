@@ -5,7 +5,7 @@ defmodule Luhn do
         |> Integer.digits
         |> Enum.reverse
         |> Enum.chunk(2, 2, [0])
-        |> Enum.flat_map_reduce(0, fn([a,b], sum) -> {[], sum + a + Enum.sum(Integer.digits(b*2))} end)
+        |> Enum.map_reduce(0, fn([a,b], sum) -> {[], sum + a + Enum.sum(Integer.digits(b*2))} end)
     rem(sum, 10) == 0
   end
 end
