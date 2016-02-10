@@ -1,12 +1,18 @@
 defmodule Luhn do
 
-  def valid?(cc) do
-    {_, sum} = String.to_integer(cc)
-        |> Integer.digits
+  def valid?(cc) when is_integer(cc) do
+    {_, sum} = Integer.digits(cc)
         |> Enum.reverse
         |> Enum.chunk(2, 2, [0])
         |> Enum.map_reduce(0, fn([a,b], sum) -> {[], sum + a + Enum.sum(Integer.digits(b*2))} end)
     rem(sum, 10) == 0
+  end
+
+  def valid?(cc) do
+    case Integer.parse(cc) do
+      {cc_int, _} -> valid?(cc_int)
+      _ -> {:error, "Cannot parse integer from string"}
+    end
   end
 end
 
@@ -21,6 +27,10 @@ defmodule LuhnTest do
 
   test "checks transposed digits of known valid number from wikipedia" do
     refute Luhn.valid?("97927398713")
+  end
+
+  test "what happens with invalid integer input?" do
+    assert {:error, _} = Luhn.valid?("abc123")
   end
 
 end
