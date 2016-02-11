@@ -1,11 +1,11 @@
 defmodule Luhn do
 
   def valid?(cc) when is_integer(cc) do
-    sum = Integer.digits(cc)
-        |> Enum.reverse
-        |> Enum.chunk(2, 2, [0])
-        |> Enum.reduce(0, fn([a,b], sum) -> sum + a + Enum.sum(Integer.digits(b*2)) end)
-    rem(sum, 10) == 0
+    0 == Integer.digits(cc)
+         |> Enum.reverse
+         |> Enum.chunk(2, 2, [0])
+         |> Enum.reduce(0, fn([odd, even], sum) -> Enum.sum([sum, odd | Integer.digits(even*2)]) end)
+         |> rem(10)
   end
 
   def valid?(cc) when is_binary(cc) do
