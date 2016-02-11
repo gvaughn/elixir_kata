@@ -9,4 +9,4 @@ It came up on the Elixir Slack channel and I decided to give it a try
 just for fun.
 
 # Execute
-elixir waterflow.exs
+elixir luhn.exs
