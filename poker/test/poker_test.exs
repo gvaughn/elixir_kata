@@ -43,14 +43,14 @@ defmodule PokerTest do
   end
 
   test "using tiebreakers pair of 3s beat a pair of 2s" do
-    assert Poker.winner("3C 3H 5C 7D 9S 2C 2H 5S 7C AH") == 1
+    assert Poker.winner("3C 3H 5C 7D 9S 2C 2H 5S 7C AH").player == 1
   end
 
   test "using tiebreakers ace-high beats king-high" do
-    assert Poker.winner("AC 2H 4C 6D 8S KH 2C 4H 6C 8H") == 1
+    assert Poker.winner("AC 2H 4C 6D 8S KH 2C 4H 6C 8H").player== 1
   end
 
   test "using tiebreakers pairs use kicker" do
-    assert Poker.winner("8H 8S AC 2S 3D 8C 8D KD 9S 2C") == 1
+    assert Poker.winner("8H 8S AC 2S 3D 8C 8D KD 9S 2C").player == 1
   end
 end

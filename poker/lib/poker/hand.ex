@@ -1,58 +1,58 @@
-defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
+defmodule Poker.Hand do
+  alias Poker.Card
+  defstruct player: 0, type: "", cards: [], power: 0
 
   def from_string(str) do
-    #TODO remove duplication with pair_from_string
-    cards = str
-      |> String.split
-      |> Enum.map &Poker.Card.from_string/1
-    {type, power} = stats(cards)
-    Poker.Hand.new(player: 0, type: type, cards: cards, power: power)
+    pair_from_string(str) |> List.first
   end
 
-  def pair_from_string(str) do
-    cards = str
-      |> String.split
-      |> Enum.map &Poker.Card.from_string/1
-
-    {p1_cards, p2_cards} = Enum.split(cards, 5)
-    {p1_type, p1_power} = stats(p1_cards)
-    {p2_type, p2_power} = stats(p2_cards)
-
-    {Poker.Hand.new(player: 1, type: p1_type, cards: p1_cards, power: p1_power),
-     Poker.Hand.new(player: 2, type: p2_type, cards: p2_cards, power: p2_power)}
+  def pair_from_string(card_str) do
+    card_str
+    |> String.split
+    |> Enum.map(&Card.from_string/1)
+    |> Enum.chunk(5)
+    |> Enum.zip([1,2])
+    |> Enum.map(fn {cards, player} ->
+      {type, power} = stats(cards)
+      %__MODULE__{player: player, type: type, cards: cards, power: power}
+    end)
   end
 
   defp stats(cards) do
     {card_freq, suit_freq, gaps} = raw_stats(cards)
     tiebreakers = card_freq
       |> Enum.sort(fn({ka, va}, {kb, vb}) -> {va, ka} > {vb, kb} end)
-      |> Enum.map(fn({card, count}) -> card end)
+      |> Enum.map(fn({card, _count}) -> card end)
     {straight, tiebreakers} = is_straight?(gaps, tiebreakers)
 
     face_arity = Enum.count(card_freq)
-    max_face_freq = card_freq |> Dict.values |> Enum.max
+    max_face_freq = card_freq |> Map.values |> Enum.max
     suit_arity = Enum.count(suit_freq)
 
     determine_type(face_arity, max_face_freq, suit_arity, straight, tiebreakers)
   end
 
   defp raw_stats(cards) do
-    {card_freq, suit_freq} = cards
-      |> Enum.reduce({ListDict.new, HashDict.new}, &Poker.Hand.frequencies/2)
+    {card_freq, suit_freq} = Enum.reduce(cards, {%{}, %{}}, &frequencies/2)
 
-    sorted_cards = cards |> Enum.sort(fn(a,b) -> a.value > b.value end)
-    gaps = each_cons(sorted_cards) |> Enum.map(fn([a,b]) -> a.value - b.value end)
+    sorted_cards = Enum.sort_by(cards, &Card.value/1, &>/2)
+    gaps =
+    sorted_cards
+    |> Enum.chunk(2, 1)
+    |> Enum.map(fn([a,b]) -> Card.value(a) - Card.value(b) end)
 
     {card_freq, suit_freq, gaps}
   end
 
-  defp is_straight?([1,1,1,1], card_freq), do: {true, [Enum.first(card_freq)]}
-  defp is_straight?([9,1,1,1], card_freq), do: {true, [5]} #ace low straight
+  defp is_straight?([1,1,1,1], card_freq), do: {true, [List.first(card_freq)]}
+  defp is_straight?([9,1,1,1], _card_freq), do: {true, [5]} #ace low straight
   defp is_straight?(_, card_freq),         do: {false, card_freq}
 
-  def frequencies(card, {face_hash, suit_hash}) do
-    {Dict.update(face_hash, card.value, 1, &1 + 1),
-     Dict.update(suit_hash, card.suit,  1, &1 + 1)}
+  defp frequencies(card, {face_map, suit_map}) do
+    {
+      Map.update(face_map, Card.value(card), 1, &(&1 + 1)),
+      Map.update(suit_map, card.suit, 1, &(&1 + 1))
+    }
   end
 
   defp determine_type(face_arity, max_face_freq, suit_arity, straight, tiebreakers) do
@@ -72,15 +72,8 @@ defrecord Poker.Hand, player: 0, type: "", cards: [], power: 0 do
 
   defp calc_power(digits) do
     Enum.zip(digits, 5..0)
-    |> Enum.reduce(0, fn({term, exponent}, sum) -> sum +
-                          :erlang.trunc(term * :math.pow(15, exponent)) end)
-  end
-
-  defp each_cons(list, n // 2), do: _each_cons(list, n, [])
-
-  defp _each_cons(list, n, result) when length(list) < 2, do: Enum.reverse(result)
-
-  defp _each_cons(list = [_ | tail], n, result) do
-    _each_cons(tail, n, [Enum.take(list, n) | result])
+    |> Enum.reduce(0, fn({term, exponent}, sum) ->
+      sum + :erlang.trunc(term * :math.pow(15, exponent))
+    end)
   end
 end
