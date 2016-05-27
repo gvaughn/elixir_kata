@@ -8,11 +8,10 @@ defmodule RomanNumerals do
   @mappings [{"X", 10}, {"IX", 9}, {"V", 5}, {"IV", 4}, {"I", 1}]
 
   def convert(number) do
-    {0, str} = @mappings |> Enum.reduce {number, ""}, fn
-      ({roman, arabic}, {number, str}) when number >= arabic ->
-        {rem(number, arabic), str <> String.duplicate(roman, div(number, arabic)) }
-      (_, accum) -> accum
-    end
+    {0, str} = Enum.reduce(@mappings, {number, ""},
+      fn ({roman, arabic}, {number, str}) ->
+          {rem(number, arabic), str <> String.duplicate(roman, div(number, arabic)) }
+      end)
     str
   end
 end
