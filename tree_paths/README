@@ -1,0 +1,25 @@
+# These are paths to a node on a tree. 
+
+a = [1,2,3]
+b = [1,2,4]
+
+# Tree looks like
+
+#        1
+#       /
+#     2
+#    / \
+#   3  4
+
+# I want this to be represented in rhe following way. 
+# elixir's non-mutable data is making this hard for me
+
+[
+  %{item: 1, children: [
+      %{item: 2, children: [
+        %{item: 3, children: []},
+        %{item: 4, children: []}
+      ]}
+    ]
+  }
+]
